@@ -40,6 +40,11 @@ python practice2_nn_gradients/nn_gradients.py
 两个脚本都会做同一件事：把完整报告打印到控制台、写进同目录的 `output.txt`，并把计算图存成
 `computation_graph.png`。脚本里所有随机量都用固定种子，跑出来每次都一样。
 
+> 本仓库里的 `output.txt` 与 `computation_graph.png` 在两个环境下各跑过一遍，结果**逐字节相同**：
+> 一个是 `Python 3.14.7 + torch 2.14.1+cpu`（本机已装好的环境），
+> 另一个是 `Python 3.12 + torch 2.14.1+cpu` 的独立虚拟环境。
+> 两者在 `float64` 下与 autograd 的误差都是 `1e-16 ~ 1e-17` 量级，说明结论不依赖具体环境。
+
 ---
 
 ## 实践 1：简单计算链 `f(x, y) = (xy + x^2)^2`
@@ -295,3 +300,7 @@ X -> Linear(W1, b1) -> Z1 -> ReLU -> A1 -> Linear(W2, b2) -> Z2 -> Sigmoid -> P 
    换成 `float64` 后降到 `1e-16 ~ 1e-17`。所以先确认精度，再怀疑公式。
 7. **网络环境**：`git clone` 直接连 GitHub 会被重置，最后走本地代理才拉下来。
    这类问题和梯度无关，但会堵住「把结果提交上去」这一步，一并记在这里。
+8. **找解释器这件事本身也会踩坑**：一开始在当前 shell 的 `PATH` 里看不到 `python`
+   （本机解释器装在 `%LOCALAPPDATA%\Programs\Python\Python314`，且该目录当时读不到），
+   误以为要从零准备环境，多装了一个重复的 PyTorch。教训和 Q4 的顺序一模一样：
+   **先确认「环境/形状」这类前提，再去改代码**——前提没查清，后面的努力都会白费。
